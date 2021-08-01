@@ -58,11 +58,14 @@ impl VapidSigner {
         let signing_input = format!(
             "{}.{}",
             *JWT_HEADERS,
-            base64::encode_config(&serde_json::to_string(&claims)?, URL_SAFE_NO_PAD)
+            base64::encode_config(&serde_json::to_string(&claims)?, URL_SAFE_NO_PAD)//TODO look at this
         );
 
         let public_key = key.public_key();
-        let auth_k = base64::encode_config(&public_key, URL_SAFE_NO_PAD);
+
+        //These bytes were already base64 encrypted by ece. This means they must be valid utf8.
+        let auth_k = unsafe { String::from_utf8_unchecked(public_key) };
+
         let pkey = PKey::from_ec_key(key.0)?;
 
         let mut signer = SslSigner::new(MessageDigest::sha256(), &pkey)?;
