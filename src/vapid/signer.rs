@@ -8,11 +8,7 @@ use time::{self, OffsetDateTime};
 
 lazy_static! {
     static ref JWT_HEADERS: String = base64::encode_config(
-        &serde_json::to_string(&json!({
-            "typ": "JWT",
-            "alg": "ES256"
-        }))
-        .unwrap(),
+        &serde_json::to_string(&json!({"typ": "JWT","alg": "ES256"})).unwrap(),
         URL_SAFE_NO_PAD
     );
 }
@@ -55,15 +51,16 @@ impl VapidSigner {
             claims.insert("exp", Value::Number(number));
         }
 
+        //Generate first half of JWT
         let signing_input = format!(
             "{}.{}",
             *JWT_HEADERS,
-            base64::encode_config(&serde_json::to_string(&claims)?, URL_SAFE_NO_PAD)//TODO look at this
+            base64::encode_config(&serde_json::to_string(&claims)?, URL_SAFE_NO_PAD)
         );
 
         let public_key = key.public_key();
 
-        //These bytes were already base64 encrypted by ece. This means they must be valid utf8.
+        //This key should have already been base64 encoded, as that is what ece does.
         let auth_k = unsafe { String::from_utf8_unchecked(public_key) };
 
         let pkey = PKey::from_ec_key(key.0)?;

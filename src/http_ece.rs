@@ -70,7 +70,11 @@ impl<'a> HttpEce<'a> {
                 if let Some(signature) = &self.vapid_signature {
                     headers.push((
                         "Authorization",
-                        format!("vapid t={}, k={}", signature.auth_t, signature.auth_k),
+                        format!(
+                            "vapid t={}, k={}",
+                            signature.auth_t,
+                            base64::encode_config(&signature.auth_k, base64::URL_SAFE_NO_PAD) //Must base64 encode here, as we dont pass to ece.
+                        ),
                     ));
                 }
 
