@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - actions
   pull_request:
 jobs:
   clippy:
@@ -59,7 +60,8 @@ jobs:
 
       - name: Install vcpkg openssl on windows
         if: ${{ matrix.os == 'windows-latest' }}
-        run: vcpkg install openssl:x64-windows
+          - run: vcpkg integrate install
+          - run: vcpkg install openssl:x64-windows
 
       - name: Run tests
         run: cargo test
