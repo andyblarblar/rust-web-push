@@ -62,7 +62,7 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           vcpkg integrate install
-          vcpkg install openssl:x64-windows
+          vcpkg install openssl:x64-windows-static-md
 
       - name: Run tests
         run: cargo test
