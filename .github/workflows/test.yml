@@ -57,5 +57,9 @@ jobs:
         with:
           toolchain: ${{matrix.rust}}
 
+      - name: Install vcpkg openssl on windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: vcpkg install openssl:x64-windows
+
       - name: Run tests
         run: cargo test
