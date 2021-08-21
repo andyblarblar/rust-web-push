@@ -58,4 +58,4 @@ jobs:
           toolchain: ${{matrix.rust}}
 
       - name: Run tests
-        run: cargo test --features=openssl/vendored
+        run: cargo test
